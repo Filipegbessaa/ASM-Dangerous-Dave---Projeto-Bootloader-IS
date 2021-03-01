@@ -3,7 +3,7 @@ jmp 0x0000:start
 
 data:
     press_enter db 'Press ENTER to start',0
-    ground db '--------------------------------------------------------------------------------',0
+    ground db '----------------------------------------',0
 
     ;dados do projeto
 
@@ -31,7 +31,7 @@ clear:                   ; mov bl, color
     int 0x10
 
     ; reset cursor to the center of the screen
-    mov dl, 0x1E
+    mov dl, 0x0B
     mov dh, 0x0C
     mov bh, 0      
     mov ah, 0x2
@@ -49,7 +49,6 @@ prints:             ; mov si, string
       lodsb           ; bota character apontado por si em al 
       cmp al, 0       ; 0 é o valor atribuido ao final de uma string
       je .endloop     ; Se for o final da string, acaba o loop
-      mov bl, 6
       call putchar    ; printa o caractere
       jmp .loop       ; volta para o inicio do loop
   .endloop:
@@ -68,14 +67,13 @@ start_game:
 
 draw_ground:
     mov dl, 0
-    mov dh, 20
+    mov dh, 24
     mov bh, 0      
     mov ah, 0x2
     int 0x10
 
-    mov bx, 0
+    mov bl, 0x06
     mov si, ground
-    mov bl, 1
     call prints
 
     mov dl, 0
@@ -86,14 +84,30 @@ draw_ground:
 
     ret
 
+draw_dave:
+
+    mov dl, 5
+    mov dh, 22
+    mov bh, 0      
+    mov ah, 0x2
+    int 0x10
+
+    mov al, '6'
+    mov bl, 0x04
+    call putchar
+    ret
+
+
 start:
+    mov ax, 13h  
+    int 10h
     xor ax, ax    ;limpando ax
     mov ds, ax    ;limpando ds
     mov es, ax    ;limpando es
 
 
     ;limpando a tela, em bl fica o valor da cor que vai ser utilizada na tela, 15 é o valor branco, outras cores disponíveis no tutorial    
-    mov bl, 12 
+    mov bl, 0x0E
     call clear
 
     ;Imprimindo na tela a mensagem declarada em data
@@ -103,6 +117,7 @@ start:
 
 
     call draw_ground
+    call draw_dave
 
 
 
