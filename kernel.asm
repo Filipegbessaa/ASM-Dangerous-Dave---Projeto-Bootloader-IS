@@ -101,7 +101,7 @@ start_game:
 
 draw_ground:
     mov dl, 0
-    mov dh, 24
+    mov dh, 25
     mov bh, 0      
     mov ah, 0x2
     int 0x10
@@ -131,47 +131,65 @@ draw_left_wall:
         call putchar
         inc dh
         cmp dh, 24
-        je .endloop
+        je .draw_pipe
         jmp .loop
     
-    .draw_pipe:
-        mov dl, 1
-        mov dh, 20
+        .draw_pipe:
+            mov dl, 1
+            mov dh, 20
+            mov bh, 0      
+            mov ah, 0x2
+            int 0x10
+
+            mov bl, 07      ;Draw the top of the pipe
+            mov al, '-'
+            call putchar
+            inc dl
+            call putchar
+            inc dl 
+            call putchar
+
+            inc dh          
+            mov bh, 0       ;Draw the pipe outlet
+            mov ah, 0x2
+            int 0x10
+            mov al, 'O'
+            call putchar
+
+            mov dh, 22
+            mov dl, 1
+            mov bh, 0      ;Draw the bottom of the pipe
+            mov ah, 0x2
+            int 0x10
+            mov al, '-'
+            call putchar
+            inc dl 
+            call putchar
+            inc dl 
+            call putchar
+            jmp .endloop
+        
+    .endloop
+    ret
+
+draw_right_wall:
+    mov dl, 39
+    mov dh, 0
+    
+    .loop
         mov bh, 0      
         mov ah, 0x2
         int 0x10
-
-        mov bl, 07      ;Draw the top of the pipe
-        mov al, '-'
+        mov al, '|'
+        mov bl, 0x04
         call putchar
-        inc dl
-        call putchar
-        inc dl 
-        call putchar
-        inc dl
-        inc dh          
-        mov bh, 0       ;Draw the pipe outlet
-        mov ah, 0x2
-        int 0x10
-        mov al, 'O'
-        call putchar
-
-        mov dh, 22
-        mov dl, 1
-        mov bh, 0      ;Draw the bottom of the pipe
-        mov ah, 0x2
-        int 0x10
-        mov al, '-'
-        call putchar
-        inc dl 
-        call putchar
-        inc dl 
-        call putchar
-        
+        inc dh
+        cmp dh, 24
+        je .endloop
+        jmp .loop
+    
     .endloop
-    jmp .draw_pipe
     ret
-
 
 
 draw_dave:
@@ -207,6 +225,9 @@ start:
     call draw_ground
     call draw_left_wall
     call draw_dave
+    call draw_right_wall
+
+
 
 
 
