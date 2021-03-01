@@ -35,28 +35,28 @@ clear:                   ; mov bl, color
     int 0x10
 
     ; reset cursor to the center of the screen
-    mov dl, 0x0B
     mov dh, 0x0C
+    mov dl, 0x0B
     mov bh, 0      
     mov ah, 0x2
     int 0x10
     ret
 
 endl:       ;Pula uma linha, printando na tela o caractere que representa o /n
-  mov al, 0x0a          ; line feed
-  call putchar
-  mov al, 0x0d          ; carriage return
-  call putchar
-  ret
+    mov al, 0x0a          ; line feed
+    call putchar
+    mov al, 0x0d          ; carriage return
+    call putchar
+    ret
 prints:             ; mov si, string
-  .loop:
-      lodsb           ; bota character apontado por si em al 
-      cmp al, 0       ; 0 é o valor atribuido ao final de uma string
-      je .endloop     ; Se for o final da string, acaba o loop
-      call putchar    ; printa o caractere
-      jmp .loop       ; volta para o inicio do loop
-  .endloop:
-  ret
+    .loop:
+        lodsb           ; bota character apontado por si em al 
+        cmp al, 0       ; 0 é o valor atribuido ao final de uma string
+        je .endloop     ; Se for o final da string, acaba o loop
+        call putchar    ; printa o caractere
+        jmp .loop       ; volta para o inicio do loop
+    .endloop:
+        ret
 
 start_screen:
         ; set the cursor to top left-most corner of screen
@@ -71,8 +71,8 @@ start_screen:
     mov ah, 0x9
     int 0x10
 
-    mov dl, 0x0E
     mov dh, 0x02    
+    mov dl, 0x0E
     mov bh, 0      
     mov ah, 0x2
     int 0x10
@@ -80,8 +80,8 @@ start_screen:
     call prints
 
     ; reset cursor to the center of the screen
-    mov dl, 0x0B
     mov dh, 0x0C
+    mov dl, 0x0B
     mov bh, 0      
     mov ah, 0x2
     int 0x10
@@ -103,8 +103,8 @@ start_game:
     
 
 draw_ground:
-    mov dl, 0
     mov dh, 25
+    mov dl, 0
     mov bh, 0      
     mov ah, 0x2
     int 0x10
@@ -122,8 +122,8 @@ draw_ground:
     ret
 
 draw_left_wall:
-    mov dl, 0
     mov dh, 0
+    mov dl, 0
     .loop
         mov bh, 0      
         mov ah, 0x2
@@ -138,8 +138,8 @@ draw_left_wall:
         jmp .loop
     
         .draw_pipe:
-            mov dl, 1
             mov dh, 20
+            mov dl, 1
             mov bh, 0      
             mov ah, 0x2
             int 0x10
@@ -176,8 +176,8 @@ draw_left_wall:
     ret
 
 draw_right_wall:
-    mov dl, 39
     mov dh, 0
+    mov dl, 39
     
     .loop
         mov bh, 0      
@@ -209,9 +209,9 @@ draw_dave:
     ret
 
 draw_scenario:
-    mov dl, 08                  ;
     mov dh, 20                  ;
-    mov bh, 0                   ; Move cursor para a coluna 8 e linha 20
+    mov dl, 08                  ;
+    mov bh, 0                   ; Move cursor para a linha 20 e coluna 8
     mov ah, 0x2                 ;
     int 0x10                    ;
 
@@ -219,26 +219,26 @@ draw_scenario:
     call prints                 ; printa ground_tile1
 
 
-    mov dl, 22                  ;
     mov dh, 20                  ;
-    mov bh, 0                   ; Move cursor para a coluna 22 e linha 20
-    mov ah, 0x2                 ;
-    int 0x10                    ;
-
-    mov si, scenario_tile1      ;
-    call prints                 ; printa ground_tile1
-
     mov dl, 22                  ;
-    mov dh, 05                  ;
-    mov bh, 0                   ; Move cursor para a coluna 22 e linha 5
+    mov bh, 0                   ; Move cursor para a linha 20 e coluna 22
     mov ah, 0x2                 ;
     int 0x10                    ;
 
     mov si, scenario_tile1      ;
     call prints                 ; printa ground_tile1
 
-    mov dl, 08                  ;
     mov dh, 05                  ;
+    mov dl, 22                  ;
+    mov bh, 0                   ; Move cursor para a linha 5 e coluna 22
+    mov ah, 0x2                 ;
+    int 0x10                    ;
+
+    mov si, scenario_tile1      ;
+    call prints                 ; printa ground_tile1
+
+    mov dh, 05                  ;
+    mov dl, 08                  ;
     mov bh, 0                   ; Move cursor para a linha 5 e coluna 8
     mov ah, 0x2                 ;
     int 0x10                    ;
@@ -247,8 +247,8 @@ draw_scenario:
     call prints                 ; printa ground_tile1
 
 
-    mov dl, 15                  ;
     mov dh, 15                  ;
+    mov dl, 15                  ;
     mov bh, 0                   ; Move cursor para a linha 15 e coluna 15
     mov ah, 0x2                 ;
     int 0x10                    ;
@@ -256,8 +256,8 @@ draw_scenario:
     mov si, scenario_tile1      ;
     call prints                 ; printa ground_tile1
     
-    mov dl, 05                  ;
     mov dh, 15                  ;
+    mov dl, 05                  ;
     mov bh, 0                   ; Move cursor para a linha 15 e coluna 5
     mov ah, 0x2                 ;
     int 0x10                    ;
