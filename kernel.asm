@@ -55,7 +55,18 @@ prints:             ; mov si, string
   print_left_wall:
       .loop1:
 
+start_game:
+    .loop2:
+        call getchar    ;Recebe caractere do usuário
+        cmp al, 0x0D    ;Compara o caractere digitado com ENTER (carriege return)
+        je .endloop2     ;Se o caractere for ENTER, a tela é limpa
+        jmp .loop2
+    .endloop2:
+        call clear
+        ret
     
+
+
 
 start:
     xor ax, ax    ;limpando ax
@@ -70,6 +81,9 @@ start:
     ;Imprimindo na tela a mensagem declarada em data
     mov si, press_enter    ;si aponta para o começo do endereço onde está mensagem
     call prints         ;Como só é impresso um caractere por vez, pegamos uma string com N caracteres e printamos um por um em ordem até chegar ao caractere de valor 0 que é o fim da string, assim prints pega a string para qual o ponteiro si aponta e a imprime na tela até o seu final
+    call start_game
+
+
 
 
 
