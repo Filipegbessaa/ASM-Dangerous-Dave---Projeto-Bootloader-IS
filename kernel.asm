@@ -146,7 +146,8 @@ draw_left_wall:
         call putchar
         inc dl
         call putchar
-
+        inc dl 
+        call putchar
         inc dl
         inc dh          
         mov bh, 0       ;Draw the pipe outlet
@@ -164,11 +165,13 @@ draw_left_wall:
         call putchar
         inc dl 
         call putchar
+        inc dl 
+        call putchar
         
     .endloop
     jmp .draw_pipe
     ret
-    
+
 
 
 draw_dave:
