@@ -193,7 +193,24 @@ draw_right_wall:
     
     .endloop
     ret
-
+draw_door_wall:
+    mov dh, 21
+    mov dl, 18
+    
+    .loop
+        mov bh, 0      
+        mov ah, 0x02
+        int 0x10
+        mov al, 0x7C
+        mov bl, 0x04
+        call putchar
+        inc dh
+        cmp dh, 23
+        je .endloop
+        jmp .loop
+    
+    .endloop
+    ret
 
 draw_dave:
 
@@ -208,25 +225,7 @@ draw_dave:
     call putchar
     ret
 
-draw_scenario:
-    mov dh, 20                  ;
-    mov dl, 08                  ;
-    mov bh, 0                   ; Move cursor para a linha 20 e coluna 8
-    mov ah, 0x2                 ;
-    int 0x10                    ;
-
-    mov si, scenario_tile2      ;
-    call prints                 ; printa ground_tile1
-
-
-    mov dh, 20                  ;
-    mov dl, 22                  ;
-    mov bh, 0                   ; Move cursor para a linha 20 e coluna 22
-    mov ah, 0x2                 ;
-    int 0x10                    ;
-
-    mov si, scenario_tile1      ;
-    call prints                 ; printa ground_tile1
+draw_platforms:
 
     mov dh, 05                  ;
     mov dl, 22                  ;
@@ -246,6 +245,24 @@ draw_scenario:
     mov si, scenario_tile2      ;
     call prints                 ; printa ground_tile1
 
+    mov dh, 10                  ;
+    mov dl, 01                  ;
+    mov bh, 0                   ; Move cursor para a linha 10 e coluna 1
+    mov ah, 0x2                 ;
+    int 0x10                    ;
+
+    mov si, scenario_tile2      ;
+    call prints                 ; printa ground_tile1
+
+    mov dh, 10                  ;
+    mov dl, 17                    ;
+    mov bh, 0                   ; Move cursor para a linha 10 e coluna 17
+    mov ah, 0x2                 ;
+    int 0x10                    ;
+
+    mov si, scenario_tile1      ;
+    call prints                 ; printa ground_tile1
+    
 
     mov dh, 15                  ;
     mov dl, 15                  ;
@@ -261,6 +278,29 @@ draw_scenario:
     mov bh, 0                   ; Move cursor para a linha 15 e coluna 5
     mov ah, 0x2                 ;
     int 0x10                    ;
+
+    mov si, scenario_tile2      ;
+    call prints                 ; printa ground_tile1
+
+    mov dh, 20                  ;
+    mov dl, 10                  ;
+    mov bh, 0                   ; Move cursor para a linha 20 e coluna 8
+    mov ah, 0x2                 ;
+    int 0x10                    ;
+
+    mov si, scenario_tile2      ;
+    call prints                 ; printa ground_tile1
+
+
+    mov dh, 20                  ;
+    mov dl, 18                  ;
+    mov bh, 0                   ; Move cursor para a linha 20 e coluna 22
+    mov ah, 0x2                 ;
+    int 0x10                    ;
+
+    mov si, scenario_tile1      ;
+    call prints                 ; printa ground_tile1
+
 
     mov si, scenario_tile2      ;
     call prints                 ; printa ground_tile1
@@ -297,23 +337,54 @@ draw_diamond:
     ret
 
 draw_diamonds:
-    mov bl,3                    ; Mudar a cor para ciano
+    mov bl,3                    ; Muda a cor para ciano
 
-    mov dl, 06                  ;
+
+    mov dh, 04                  ;
+    mov dl, 09                  ;
+    mov bh, 0                   ; Move cursor para a linha 4 e coluna 9
+    mov ah, 0x2                 ;
+    int 0x10                    ;
+    call draw_diamond
+
+    mov bl, 02                  ; Muda a cor do diamante de ciano para verde claro
+    mov dh, 09                  ;
+    mov dl, 01                  ;
+    mov bh, 0                   ; Move cursor para a linha 09 e coluna 01
+    mov ah, 0x2                 ;
+    int 0x10                    ;
+    call draw_diamond
+
+    mov bl, 13                  ; Muda a cor do diamante para rosa
+    mov dh, 09                  ;
+    mov dl, 20                  ;
+    mov bh, 0                   ; Move cursor para a linha 09 e coluna 01
+    mov ah, 0x2                 ;
+    int 0x10                    ;
+    call draw_diamond
+
+    mov bl, 3                   ; Muda cor para ciano
     mov dh, 14                  ;
+    mov dl, 06                  ;
     mov bh, 0                   ; Move cursor para a linha 14 e coluna 6
     mov ah, 0x2                 ;
     int 0x10                    ;
     call draw_diamond
 
-    mov dl, 09                  ;
-    mov dh, 04                  ;
-    mov bh, 0                   ; Move cursor para a linha 4 e coluna 10
+    mov dh, 19                  ;
+    mov dl, 20                  ;
+    mov bh, 0                   ; Move cursor para a linha 19 e coluna 20
     mov ah, 0x2                 ;
     int 0x10                    ;
     call draw_diamond
 
-
+    mov bl, 13                  ; Muda a cor do diamante para rosa claro
+    mov dh, 19                  ;
+    mov dl, 11                  ;
+    mov bh, 0                   ; Move cursor para a linha 09 e coluna 01
+    mov ah, 0x2                 ;
+    int 0x10                    ;
+    call draw_diamond
 
     ret
 
@@ -336,12 +407,11 @@ start:
 
     call draw_ground
     call draw_left_wall
-    call draw_dave
     call draw_right_wall
-
-    call draw_scenario
-
+    call draw_platforms
+    call draw_door_wall
     call draw_diamonds
+    call draw_dave
 
 
 jmp $
