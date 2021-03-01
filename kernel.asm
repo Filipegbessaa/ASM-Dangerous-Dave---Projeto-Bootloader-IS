@@ -129,7 +129,7 @@ draw_left_wall:
         mov ah, 0x2
         int 0x10
 
-        mov al, '|'
+        mov al, 0x7C
         mov bl, 0x04
         call putchar
         inc dh
@@ -145,7 +145,7 @@ draw_left_wall:
             int 0x10
 
             mov bl, 07      ;Draw the top of the pipe
-            mov al, '-'
+            mov al, 0x2D
             call putchar
             inc dl
             call putchar
@@ -156,7 +156,7 @@ draw_left_wall:
             mov bh, 0       ;Draw the pipe outlet
             mov ah, 0x2
             int 0x10
-            mov al, 'O'
+            mov al, 0x4F
             call putchar
 
             mov dh, 22
@@ -164,7 +164,7 @@ draw_left_wall:
             mov bh, 0      ;Draw the bottom of the pipe
             mov ah, 0x2
             int 0x10
-            mov al, '-'
+            mov al, 0x2D
             call putchar
             inc dl 
             call putchar
@@ -183,7 +183,7 @@ draw_right_wall:
         mov bh, 0      
         mov ah, 0x02
         int 0x10
-        mov al, '|'
+        mov al, 0x7C
         mov bl, 0x04
         call putchar
         inc dh
@@ -203,7 +203,7 @@ draw_dave:
     mov ah, 0x2
     int 0x10
 
-    mov al, '6'
+    mov al, 0x36
     mov bl, 0x04
     call putchar
     ret
