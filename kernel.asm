@@ -194,7 +194,7 @@ draw_right_wall:
     .endloop
     ret
 draw_door_wall:
-    mov dh, 21
+    mov dh, 20
     mov dl, 18
     
     .loop
@@ -202,7 +202,7 @@ draw_door_wall:
         mov ah, 0x02
         int 0x10
         mov al, 0x7C
-        mov bl, 0x04
+        mov bl, 4
         call putchar
         inc dh
         cmp dh, 23
@@ -211,6 +211,49 @@ draw_door_wall:
     
     .endloop
     ret
+
+draw_door:
+    mov bl, 6       ; Muda a cor para marrom
+
+    mov dh, 20      ;
+    mov dl, 23      ;
+    mov bh, 0       ; Move o cursor para a linha 22 e coluna 22
+    mov ah, 0x2     ;
+    int 0x10        ;
+
+    mov al, 0x5F    ; seta al para o caractere '_' 
+    call putchar    ; desenha parte de cima da porta
+
+    inc dh
+    dec dl
+    mov bh, 0       ; Move o cursor para a linha 21 e coluna 22
+    mov ah, 0x2     ;
+    int 0x10        ;
+    mov al, 0x7C    ; seta al para o caractere '|' 
+    call putchar
+
+    inc dh
+    mov bh, 0       
+    mov ah, 0x2     
+    int 0x10 
+    call putchar
+
+    dec dh
+    inc dl
+    inc dl
+    mov bh, 0       ; Move o cursor para a linha 23 e coluna 22
+    mov ah, 0x2     ;
+    int 0x10        ;
+    mov al, 0x7C    ; seta al para o caractere '|' 
+    call putchar
+
+    inc dh
+    mov bh, 0       
+    mov ah, 0x2     
+    int 0x10 
+    call putchar
+    
+
 
 draw_dave:
 
@@ -292,7 +335,7 @@ draw_platforms:
     call prints                 ; printa ground_tile1
 
 
-    mov dh, 20                  ;
+    mov dh, 19                  ;
     mov dl, 18                  ;
     mov bh, 0                   ; Move cursor para a linha 20 e coluna 22
     mov ah, 0x2                 ;
@@ -371,9 +414,9 @@ draw_diamonds:
     int 0x10                    ;
     call draw_diamond
 
-    mov dh, 19                  ;
+    mov dh, 18                  ;
     mov dl, 20                  ;
-    mov bh, 0                   ; Move cursor para a linha 19 e coluna 20
+    mov bh, 0                   ; Move cursor para a linha 18 e coluna 20
     mov ah, 0x2                 ;
     int 0x10                    ;
     call draw_diamond
@@ -410,6 +453,7 @@ start:
     call draw_right_wall
     call draw_platforms
     call draw_door_wall
+    call draw_door
     call draw_diamonds
     call draw_dave
 
