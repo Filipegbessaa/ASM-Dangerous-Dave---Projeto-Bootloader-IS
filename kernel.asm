@@ -6,7 +6,7 @@ data:
     dangerous_dave db 'Dangerous Dave',0
     ground db '----------------------------------------',0
     scenario_tile1 db '--------------',0
-    scenario_tile2 db '---',0
+    scenario_tile2 db '----',0
     
 
     ;dados do projeto
@@ -258,19 +258,50 @@ draw_scenario:
     
     mov dl, 05                  ;
     mov dh, 15                  ;
-    mov bh, 0                   ; Move cursor para a coluna 15 e linha 5
+    mov bh, 0                   ; Move cursor para a linha 15 e coluna 5
     mov ah, 0x2                 ;
     int 0x10                    ;
 
     mov si, scenario_tile2      ;
     call prints                 ; printa ground_tile1
 
+    ret
 
 
+draw_diamond:
+    mov bl,3                    ; Mudar a cor para ciano
+
+    mov dl, 06                  ;
+    mov dh, 14                  ;
+    mov bh, 0                   ; Move cursor para a linha 15 e coluna 5
+    mov ah, 0x2                 ;
+    int 0x10
+
+    mov al, 0x5C                ;
+    call putchar                ; desenha '\'
+
+    dec dh
+    mov bh, 0                   ; sobe o cursor em 1 linha
+    mov ah, 0x2                 ;
+    int 0x10
+    
+    mov al, 0x5F                ;
+    call putchar                ; desenha '_'
+
+    mov al, 0x5F                ;
+    call putchar                ; desenha '_'
+
+    
+    inc dh
+    inc dl
+    mov bh, 0                   ; sobe o cursor em 1 linha
+    mov ah, 0x2                 ;
+    int 0x10
+
+    mov al, 0x2F
+    call putchar
 
     ret
-    
-
 
 
 start:
@@ -295,6 +326,8 @@ start:
     call draw_right_wall
 
     call draw_scenario
+
+    call draw_diamond
 
 
 
