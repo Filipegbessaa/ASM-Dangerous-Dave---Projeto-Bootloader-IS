@@ -5,6 +5,9 @@ data:
     press_enter db 'Press ENTER to start',0
     dangerous_dave db 'Dangerous Dave',0
     ground db '----------------------------------------',0
+    scenario_tile1 db '--------------',0
+    scenario_tile2 db '---',0
+    
 
     ;dados do projeto
 
@@ -205,6 +208,70 @@ draw_dave:
     call putchar
     ret
 
+draw_scenario:
+    mov dl, 08                  ;
+    mov dh, 20                  ;
+    mov bh, 0                   ; Move cursor para a coluna 5 e linha 20
+    mov ah, 0x2                 ;
+    int 0x10                    ;
+
+    mov si, scenario_tile2      ;
+    call prints                 ; printa ground_tile1
+
+
+    mov dl, 22                  ;
+    mov dh, 20                  ;
+    mov bh, 0                   ; Move cursor para a coluna 22 e linha 20
+    mov ah, 0x2                 ;
+    int 0x10                    ;
+
+    mov si, scenario_tile1      ;
+    call prints                 ; printa ground_tile1
+
+    mov dl, 22                  ;
+    mov dh, 05                  ;
+    mov bh, 0                   ; Move cursor para a coluna 22 e linha 5
+    mov ah, 0x2                 ;
+    int 0x10                    ;
+
+    mov si, scenario_tile1      ;
+    call prints                 ; printa ground_tile1
+
+    mov dl, 08                  ;
+    mov dh, 05                  ;
+    mov bh, 0                   ; Move cursor para a coluna 5 e linha 18
+    mov ah, 0x2                 ;
+    int 0x10                    ;
+
+    mov si, scenario_tile2      ;
+    call prints                 ; printa ground_tile1
+
+
+    mov dl, 15                  ;
+    mov dh, 15                  ;
+    mov bh, 0                   ; Move cursor para a coluna 15 e linha 15
+    mov ah, 0x2                 ;
+    int 0x10                    ;
+
+    mov si, scenario_tile1      ;
+    call prints                 ; printa ground_tile1
+    
+    mov dl, 05                  ;
+    mov dh, 15                  ;
+    mov bh, 0                   ; Move cursor para a coluna 15 e linha 5
+    mov ah, 0x2                 ;
+    int 0x10                    ;
+
+    mov si, scenario_tile2      ;
+    call prints                 ; printa ground_tile1
+
+
+
+
+    ret
+    
+
+
 
 start:
     mov ax, 13h  
@@ -226,6 +293,8 @@ start:
     call draw_left_wall
     call draw_dave
     call draw_right_wall
+
+    call draw_scenario
 
 
 
