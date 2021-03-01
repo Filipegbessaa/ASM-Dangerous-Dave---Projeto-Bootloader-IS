@@ -181,7 +181,7 @@ draw_right_wall:
     
     .loop
         mov bh, 0      
-        mov ah, 0x2
+        mov ah, 0x02
         int 0x10
         mov al, '|'
         mov bl, 0x04
@@ -211,7 +211,7 @@ draw_dave:
 draw_scenario:
     mov dl, 08                  ;
     mov dh, 20                  ;
-    mov bh, 0                   ; Move cursor para a coluna 5 e linha 20
+    mov bh, 0                   ; Move cursor para a coluna 8 e linha 20
     mov ah, 0x2                 ;
     int 0x10                    ;
 
@@ -239,7 +239,7 @@ draw_scenario:
 
     mov dl, 08                  ;
     mov dh, 05                  ;
-    mov bh, 0                   ; Move cursor para a coluna 5 e linha 18
+    mov bh, 0                   ; Move cursor para a linha 5 e coluna 8
     mov ah, 0x2                 ;
     int 0x10                    ;
 
@@ -249,7 +249,7 @@ draw_scenario:
 
     mov dl, 15                  ;
     mov dh, 15                  ;
-    mov bh, 0                   ; Move cursor para a coluna 15 e linha 15
+    mov bh, 0                   ; Move cursor para a linha 15 e coluna 15
     mov ah, 0x2                 ;
     int 0x10                    ;
 
@@ -269,13 +269,6 @@ draw_scenario:
 
 
 draw_diamond:
-    mov bl,3                    ; Mudar a cor para ciano
-
-    mov dl, 06                  ;
-    mov dh, 14                  ;
-    mov bh, 0                   ; Move cursor para a linha 15 e coluna 5
-    mov ah, 0x2                 ;
-    int 0x10
 
     mov al, 0x5C                ;
     call putchar                ; desenha '\'
@@ -303,6 +296,27 @@ draw_diamond:
 
     ret
 
+draw_diamonds:
+    mov bl,3                    ; Mudar a cor para ciano
+
+    mov dl, 06                  ;
+    mov dh, 14                  ;
+    mov bh, 0                   ; Move cursor para a linha 14 e coluna 6
+    mov ah, 0x2                 ;
+    int 0x10                    ;
+    call draw_diamond
+
+    mov dl, 09                  ;
+    mov dh, 04                  ;
+    mov bh, 0                   ; Move cursor para a linha 4 e coluna 10
+    mov ah, 0x2                 ;
+    int 0x10                    ;
+    call draw_diamond
+
+
+
+    ret
+
 
 start:
     mov ax, 13h  
@@ -327,12 +341,7 @@ start:
 
     call draw_scenario
 
-    call draw_diamond
-
-
-
-
-
+    call draw_diamonds
 
 
 jmp $
