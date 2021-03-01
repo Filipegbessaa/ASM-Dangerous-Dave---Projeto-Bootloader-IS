@@ -3,6 +3,7 @@ jmp 0x0000:start
 
 data:
     press_enter db 'Press ENTER to start',0
+    ground db '--------------------------------------------------------------------------------',0
 
     ;dados do projeto
 
@@ -29,7 +30,7 @@ clear:                   ; mov bl, color
     mov ah, 0x9
     int 0x10
 
-    ; reset cursor to top left-most corner of screen
+    ; reset cursor to the center of the screen
     mov dl, 0x1E
     mov dh, 0x0C
     mov bh, 0      
@@ -48,12 +49,11 @@ prints:             ; mov si, string
       lodsb           ; bota character apontado por si em al 
       cmp al, 0       ; 0 é o valor atribuido ao final de uma string
       je .endloop     ; Se for o final da string, acaba o loop
+      mov bl, 6
       call putchar    ; printa o caractere
       jmp .loop       ; volta para o inicio do loop
   .endloop:
   ret
-  print_left_wall:
-      .loop1:
 
 start_game:
     .loop2:
@@ -66,7 +66,25 @@ start_game:
         ret
     
 
+draw_ground:
+    mov dl, 0
+    mov dh, 20
+    mov bh, 0      
+    mov ah, 0x2
+    int 0x10
 
+    mov bx, 0
+    mov si, ground
+    mov bl, 1
+    call prints
+
+    mov dl, 0
+    mov dh, 0
+    mov bh, 0      
+    mov ah, 0x2
+    int 0x10
+
+    ret
 
 start:
     xor ax, ax    ;limpando ax
@@ -75,13 +93,16 @@ start:
 
 
     ;limpando a tela, em bl fica o valor da cor que vai ser utilizada na tela, 15 é o valor branco, outras cores disponíveis no tutorial    
-    mov bl, 14 
+    mov bl, 12 
     call clear
 
     ;Imprimindo na tela a mensagem declarada em data
     mov si, press_enter    ;si aponta para o começo do endereço onde está mensagem
     call prints         ;Como só é impresso um caractere por vez, pegamos uma string com N caracteres e printamos um por um em ordem até chegar ao caractere de valor 0 que é o fim da string, assim prints pega a string para qual o ponteiro si aponta e a imprime na tela até o seu final
     call start_game
+
+
+    call draw_ground
 
 
 
