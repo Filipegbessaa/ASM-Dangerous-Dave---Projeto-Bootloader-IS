@@ -205,25 +205,25 @@ draw_door:
     call go_to_xy
 
 
-    mov al, 0x5F    ; seta al para o caractere '_' 
-    call putchar    ; desenha parte de cima da porta
+    mov al, 0x5F                ; seta al para o caractere '_' 
+    call putchar                ; desenha parte de cima da porta
 
     inc dh
-    dec dl          ; Move o cursor para a linha 21 e coluna 22
+    dec dl                      ; Move o cursor para a linha 21 e coluna 22
     call go_to_xy
-    mov al, 0x7C    ; seta al para o caractere '|' 
+    mov al, 0x7C                ; seta al para o caractere '|' 
     call putchar
 
     inc dh
     call go_to_xy
     call putchar
 
-    dec dh          ;
-    inc dl          ; Move o cursor para a linha 23 e coluna 22
-    inc dl          ; 
+    dec dh                      ;
+    inc dl                      ; Move o cursor para a linha 23 e coluna 22
+    inc dl                      ; 
     call go_to_xy
 
-    mov al, 0x7C    ; seta al para o caractere '|' 
+    mov al, 0x7C                ; seta al para o caractere '|' 
     call putchar
 
     inc dh
@@ -383,16 +383,15 @@ draw_diamonds:
 
 
 start:
-    mov ax, 13h  
+    mov ax, 13h   ; iniciar modo gráfico
     int 10h
-    xor ax, ax    ;limpando ax
-    mov ds, ax    ;limpando ds
-    mov es, ax    ;limpando es
+    xor ax, ax    ; limpando ax
+    mov ds, ax    ; limpando ds
+    mov es, ax    ; limpando es
 
 
     ;limpando a tela, em bl fica o valor da cor que vai ser utilizada na tela, 15 é o valor branco, outras cores disponíveis no tutorial    
     mov bl, 0x0E
-    call clear
 
     call start_screen
     call start_game
