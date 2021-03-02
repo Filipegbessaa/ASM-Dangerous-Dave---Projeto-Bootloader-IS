@@ -2,11 +2,15 @@ org 0x7e00
 jmp 0x0000:start 
 
 data:
-    press_enter db 'Press ENTER to start',0
-    dangerous_dave db 'Dangerous Dave',0
-    ground db '----------------------------------------',0
-    scenario_tile1 db '--------------',0
-    scenario_tile2 db '----',0
+    press_enter         db 'Press ENTER to start',0
+    dangerous_dave      db 'Dangerous Dave',0
+    ground              db '----------------------------------------',0
+    scenario_tile1      db '--------------',0
+    scenario_tile2      db '----',0
+    dave_pos_x          db 05
+    dave_pos_y          db 22
+
+
     
 
     ;dados do projeto
@@ -120,7 +124,7 @@ draw_ground:
 draw_left_wall:
     mov dh, 0
     mov dl, 0
-    .loop
+    .loop:
         call go_to_xy
 
 
@@ -162,14 +166,14 @@ draw_left_wall:
             call putchar
             jmp .endloop
         
-    .endloop
-    ret
+    .endloop:
+        ret
 
 draw_right_wall:
     mov dh, 0
     mov dl, 39
     
-    .loop
+    .loop:
         call go_to_xy
         mov al, 0x7C
         mov bl, 0x04
@@ -179,13 +183,13 @@ draw_right_wall:
         je .endloop
         jmp .loop
     
-    .endloop
-    ret
+    .endloop:
+        ret
 draw_door_wall:
     mov dh, 20
     mov dl, 18
     
-    .loop
+    .loop:
         call go_to_xy
         mov al, 0x7C
         mov bl, 4
@@ -195,8 +199,8 @@ draw_door_wall:
         je .endloop
         jmp .loop
     
-    .endloop
-    ret
+    .endloop:
+        ret
 
 draw_door:
     mov bl, 6       ; Muda a cor para marrom
@@ -230,19 +234,9 @@ draw_door:
     inc dh
     call go_to_xy
     call putchar
-    
 
-
-draw_dave:
-
-    mov dl, 5
-    mov dh, 22
-    call go_to_xy
-
-    mov al, 0x36
-    mov bl, 0x04
-    call putchar
     ret
+    
 
 
 draw_platforms:
@@ -391,6 +385,68 @@ draw_scenario:
     call draw_door
     call draw_diamonds
     ret
+draw_dave:
+
+    mov dh, [dave_pos_y]
+    mov dl, [dave_pos_x]
+    call go_to_xy
+
+    mov bl, 4
+    mov al, 0x36
+    call putchar
+
+    ret
+
+clean_last_dave_pos:
+    mov dh, [dave_pos_y]
+    mov dl, [dave_pos_x]
+    mov al, 0x20
+    call go_to_xy
+    call putchar
+
+    ret
+game_loop:
+    call draw_dave
+    call getchar
+
+    cmp al, "w"
+    je .move_up
+
+    cmp al, "a"
+    je .move_left
+
+    cmp al, "s"
+    je .move_down
+
+    cmp al, "d"
+    je .move_right
+    
+    jmp game_loop
+
+    .move_up:
+        call clean_last_dave_pos
+        dec byte [dave_pos_y]
+        jmp game_loop
+
+    .move_left:
+        call clean_last_dave_pos
+        dec byte [dave_pos_x]
+        jmp game_loop
+
+    .move_down:
+        call clean_last_dave_pos
+        inc byte [dave_pos_y]
+        jmp game_loop
+
+    .move_right:
+        call clean_last_dave_pos
+        inc byte [dave_pos_x]
+        jmp game_loop
+
+    jmp game_loop
+    
+
+
 
 
 
@@ -406,7 +462,8 @@ start:
     call draw_scenario
 
 
-    call draw_dave
+
+    call game_loop
 
 
 jmp $
