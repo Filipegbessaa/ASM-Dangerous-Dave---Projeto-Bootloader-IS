@@ -381,6 +381,17 @@ draw_diamonds:
 
     ret
 
+draw_scenario:
+    call draw_ground
+    call draw_left_wall
+    call draw_right_wall
+    call draw_platforms
+    call draw_door_wall
+    call draw_door
+    call draw_diamonds
+    ret
+
+
 
 start:
     mov ax, 13h   ; iniciar modo gráfico
@@ -395,15 +406,9 @@ start:
 
     call start_screen
     call start_game
+    call draw_scenario
 
 
-    call draw_ground
-    call draw_left_wall
-    call draw_right_wall
-    call draw_platforms
-    call draw_door_wall
-    call draw_door
-    call draw_diamonds
     call draw_dave
 
 
