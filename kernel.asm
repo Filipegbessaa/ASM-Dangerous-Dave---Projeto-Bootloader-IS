@@ -60,7 +60,8 @@ prints:                         ; mov si, string
         ret
 
 start_screen:
-        
+    mov bl, 14              ; muda a cor das letras para amarelo
+
     mov dx, 0               ; 
     call go_to_xy           ;
                             ;
@@ -393,16 +394,12 @@ draw_scenario:
 
 
 
-start:
-    mov ax, 13h   ; iniciar modo gráfico
-    int 10h
-    xor ax, ax    ; limpando ax
-    mov ds, ax    ; limpando ds
-    mov es, ax    ; limpando es
-
-
-    ;limpando a tela, em bl fica o valor da cor que vai ser utilizada na tela, 15 é o valor branco, outras cores disponíveis no tutorial    
-    mov bl, 0x0E
+start:          
+    mov ax, 13h             ; iniciar modo gráfico
+    int 10h         
+    xor ax, ax              ; limpando ax
+    mov ds, ax              ; limpando ds
+    mov es, ax              ; limpando es
 
     call start_screen
     call start_game
