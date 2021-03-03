@@ -11,6 +11,7 @@ data:
     dave_pos_y          db 22
     dave_next_pos_x     db 0
     dave_next_pos_y     db 0
+    score               db 0
 
 
     
@@ -369,7 +370,7 @@ draw_gem:
 
 
 draw_gems:
-    mov bl,3                    ; Muda a cor para ciano
+    mov bl,14                    ; Muda a cor para amarelo
 
 
     mov dh, 04                  ;
@@ -377,19 +378,19 @@ draw_gems:
     call go_to_xy
     call draw_gem
 
-    mov bl, 02                  ; Muda a cor do diamante de ciano para verde claro
+    mov bl, 02                  ; Muda a cor para verde claro
     mov dh, 09                  ;
     mov dl, 01                  ; Move cursor para a linha 09 e coluna 01
     call go_to_xy
     call draw_gem
 
-    mov bl, 13                  ; Muda a cor do diamante para rosa
+    mov bl, 13                  ; Muda a cor para rosa
     mov dh, 09                  ;
     mov dl, 20                  ; Move cursor para a linha 09 e coluna 01
     call go_to_xy
     call draw_gem
 
-    mov bl, 3                   ; Muda cor para ciano
+    mov bl, 14                   ; Muda cor para amarelo
     mov dh, 14                  ;
     mov dl, 06                  ;Move cursor para a linha 14 e coluna 6
     call go_to_xy
@@ -400,7 +401,7 @@ draw_gems:
     call go_to_xy
     call draw_gem
 
-    mov bl, 13                  ; Muda a cor do diamante para rosa claro
+    mov bl, 13                  ; Muda a cor para rosa claro
     mov dh, 19                  ;
     mov dl, 11                  ; Move cursor para a linha 09 e coluna 01
     call go_to_xy
@@ -445,6 +446,35 @@ read_char_in_cursor_pos:
     int 10h
     ret
 
+collect_gem:
+    cmp ah, 3                           
+    je .emerald_collect_score_increase  ; aumenta score em 3 ao coletar esmeralda (gema verde)
+
+    cmp ah, 14                          
+    je .gold_collect_score_increase      ; aumenta score em 1 ao coletar ouro
+
+    cmp ah, 13
+    je .quartzo_collect_score_increase  ; aumenta score em 2 ao coletar quartzo
+
+    ret
+
+
+    .gold_collect_score_increase:
+        inc byte [score]
+        ret
+
+    .quartzo_collect_score_increase:
+        inc byte [score]
+        inc byte [score]
+        ret
+
+    .emerald_collect_score_increase:
+        inc byte [score]
+        inc byte [score]
+        inc byte [score]
+        ret
+
+
 game_loop:
     call draw_dave
     call getchar
@@ -469,6 +499,7 @@ game_loop:
         call read_char_in_cursor_pos
         cmp ah, 4
         je game_loop
+        call collect_gem
         
         call clean_last_dave_pos
         dec byte [dave_pos_y]
@@ -484,6 +515,7 @@ game_loop:
         je game_loop
         cmp ah, 7
         je game_loop
+        call collect_gem
 
 
         call clean_last_dave_pos
@@ -500,6 +532,7 @@ game_loop:
         je game_loop
         cmp ah, 6
         je game_loop
+        call collect_gem
 
         
         call clean_last_dave_pos
@@ -512,6 +545,7 @@ game_loop:
         call read_char_in_cursor_pos
         cmp ah, 4
         je game_loop
+        call collect_gem
 
         call clean_last_dave_pos
         inc byte [dave_pos_x]
