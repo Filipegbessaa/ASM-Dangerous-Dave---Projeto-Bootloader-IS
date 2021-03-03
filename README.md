@@ -19,10 +19,17 @@ Debian/Ubuntu: apt-get install qemu
 
 ENTER = start the game
 
-W = jump (without jetpack) and move up (with jetpack)
-A = move left  
-S = move down  
-D = move right
+- Without jetpack
+w = jump
+a = move left  
+d = move right
+
+- With jetpack
+w = move up
+a = move left  
+d = move right  
+s = move down  
+
 
 ## Disclaimer ❗
 
