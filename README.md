@@ -21,16 +21,16 @@ ENTER = start the game
 
 - Without jetpack
 
-    w = jump
-    a = move left  
-    d = move right
+    -w = jump
+    -a = move left  
+    -d = move right
 
 - With jetpack
 
-    w = move up
-    a = move left  
-    d = move right  
-    s = move down  
+    -w = move up
+    -a = move left  
+    -d = move right  
+    -s = move down  
 
 
 ## Disclaimer ❗
