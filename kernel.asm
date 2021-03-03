@@ -28,7 +28,16 @@ putchar:                        ;Printa um caractere na tela, pega o valor salvo
     mov ah, 0x0e
     int 10h
     ret
-    
+
+prints:                         ; mov si, string
+    .loop:
+        lodsb                   ; bota character apontado por si em al 
+        cmp al, 0               ; 0 é o valor atribuido ao final de uma string
+        je .endloop             ; Se for o final da string, acaba o loop
+        call putchar            ; printa o caractere
+        jmp .loop               ; volta para o inicio do loop
+    .endloop:
+        ret    
 getchar:                        ;Pega o caractere lido no teclado e salva em al
     mov ah, 0x00
     int 16h
@@ -38,6 +47,12 @@ go_to_xy:
     mov bh, 0                   ; escolhe a página
     mov ah, 0x2                 ; escolhe a função de setar posição do cursor
     int 0x10                    ; 
+    ret
+
+read_char_in_cursor_pos:
+    xor bh, bh
+    mov ah, 0x08
+    int 10h
     ret
 
 clear:
@@ -56,42 +71,9 @@ clear:
 
     ret
 
-endl:                           ;Pula uma linha, printando na tela o caractere que representa o /n
-    mov al, 0x0a                ; line feed
-    call putchar
-    mov al, 0x0d                ; carriage return
-    call putchar
-    ret
-prints:                         ; mov si, string
-    .loop:
-        lodsb                   ; bota character apontado por si em al 
-        cmp al, 0               ; 0 é o valor atribuido ao final de uma string
-        je .endloop             ; Se for o final da string, acaba o loop
-        call putchar            ; printa o caractere
-        jmp .loop               ; volta para o inicio do loop
-    .endloop:
-        ret
-
-game_over_screen:
-    mov bl, 4              ; muda a cor das letras para vermelho
-
-    mov dh, 2    
-    mov dl, 12
-    call go_to_xy
-
-    mov si, congratulations
-    call prints
-
-    ; reset cursor to the center of the screen
-    mov dh, 12
-    mov dl, 9
-    call go_to_xy
 
 
-    mov si, you_are_really_dangerous    ;si aponta para o começo do endereço onde está mensagem
-    call prints         ;
 
-    ret
 start_screen:
     mov bl, 14              ; muda a cor das letras para amarelo
 
@@ -113,13 +95,35 @@ start_screen:
 
     ret
 
+game_over_screen:
+    mov bl, 4              ; muda a cor das letras para vermelho
+
+    mov dh, 2    
+    mov dl, 12
+    call go_to_xy
+
+    mov si, congratulations
+    call prints
+
+    ; reset cursor to the center of the screen
+    mov dh, 12
+    mov dl, 9
+    call go_to_xy
+
+
+    mov si, you_are_really_dangerous    ;si aponta para o começo do endereço onde está mensagem
+    call prints         ;
+
+    ret
+
 start_game:
-    .loop2:
+    .loop:
         call getchar    ;Recebe caractere do usuário
         cmp al, 0x0D    ;Compara o caractere digitado com ENTER (carriege return)
-        je .endloop2    ;Se o caractere for ENTER, a tela é limpa
-        jmp .loop2
-    .endloop2:
+        je .endloop    ;Se o caractere for ENTER, a tela é limpa
+        jmp .loop
+
+    .endloop:
         mov dh, 2    
         mov dl, 14
         call go_to_xy
@@ -164,8 +168,8 @@ draw_left_wall:
         call go_to_xy
 
 
-        mov al, 0x7C
-        mov bl, 0x04
+        mov al, 0x7C         ; '|'
+        mov bl, 0x04         ; cor vermelha
         call putchar
         inc dh
         cmp dh, 24
@@ -178,7 +182,7 @@ draw_left_wall:
             call go_to_xy
 
 
-            mov bl, 07      ;Draw the top of the pipe
+            mov bl, 07      ; Desenha parte de cima do cano
             mov al, 0x2D
             call putchar
             inc dl
@@ -187,7 +191,7 @@ draw_left_wall:
             call putchar
 
             inc dh          
-            call go_to_xy   ; Draw the pipe outlet
+            call go_to_xy   ; Desenha saída do cano
             mov al, 0x4F
             call putchar
 
@@ -195,7 +199,7 @@ draw_left_wall:
             mov dl, 1
             call go_to_xy
             mov al, 0x2D
-            call putchar    ; Draw the bottom of the pipe
+            call putchar    ; Desenha parte de baixo do cano
             inc dl 
             call putchar
             inc dl 
@@ -228,12 +232,12 @@ draw_roof:
     
     .loop:
         call go_to_xy
-        mov al, 0x2D
+        mov al, 0x2D                    ; seta para caractere '-'
         mov bl, 4
         call putchar
-        inc dl
+        inc dl                          ; pula para a próxima posição
         call read_char_in_cursor_pos
-        cmp ah, 4
+        cmp ah, 4                       ; verifica se a cor é vermelha
         je .endloop
         jmp .loop
     
@@ -258,10 +262,10 @@ draw_door_wall:
         ret
 
 draw_door:
-    mov bl, 6       ; Muda a cor para marrom
+    mov bl, 6                   ; Muda a cor para marrom
 
-    mov dh, 20      ;
-    mov dl, 23      ; Move o cursor para a linha 22 e coluna 22
+    mov dh, 20                  ;
+    mov dl, 23                  ; Move o cursor para a linha 22 e coluna 22
     call go_to_xy
 
 
@@ -392,15 +396,10 @@ draw_diamond:
     ret
 draw_gem:
 
-    mov al, 4                   ;
-    call putchar                ; desenha 'O'
+    mov al, 4                   ; 
+    call putchar                ; desenha a gema
 
     ret
-
-; erase_diamond:
-;     cmp al, 0x5C
-;     je .erase_diamond_
-
 
 draw_gems:
     mov bl,14                    ; Muda a cor para amarelo
@@ -442,44 +441,6 @@ draw_gems:
 
     ret
 
-draw_scenario:
-    call draw_ground
-    call draw_left_wall
-    call draw_right_wall
-    call draw_roof
-    call draw_platforms
-    call draw_door_wall
-    call draw_door
-    call draw_gems
-    call draw_jetpack
-    ret
-draw_dave:
-
-    mov dh, [dave_pos_y]
-    mov dl, [dave_pos_x]
-    call go_to_xy
-
-    mov bl, 4
-    mov al, 0x36
-    call putchar
-
-    ret
-
-clean_last_dave_pos:
-    mov dh, [dave_pos_y]
-    mov dl, [dave_pos_x]
-    mov al, 0x20
-    call go_to_xy
-    call putchar
-
-    ret
-
-read_char_in_cursor_pos:
-    xor bh, bh
-    mov ah, 0x08
-    int 10h
-    ret
-
 collect_gem:
     cmp ah, 2                           
     je .emerald_collect_score_increase  ; aumenta score em 3 ao coletar esmeralda (gema verde)
@@ -488,7 +449,7 @@ collect_gem:
     je .gold_collect_score_increase      ; aumenta score em 1 ao coletar ouro
 
     cmp ah, 13
-    je .quartzo_collect_score_increase  ; aumenta score em 2 ao coletar quartzo
+    je .quartzo_collect_score_increase  ; aumenta score em 2 ao coletar quartzo (gema rosa)
 
     ret
 
@@ -510,19 +471,56 @@ collect_gem:
         call draw_score_value
         ret
 
+draw_scenario:
+    call draw_ground
+    call draw_left_wall
+    call draw_right_wall
+    call draw_roof
+    call draw_platforms
+    call draw_door_wall
+    call draw_door
+
+draw_items:
+    call draw_gems
+    call draw_jetpack
+    ret
+
+draw_dave:
+
+    mov dh, [dave_pos_y]        ;
+    mov dl, [dave_pos_x]        ; define a posição do Dave
+    call go_to_xy               ;
+
+    mov bl, 4                   ; escolhe a cor vermlha
+    mov al, 0x36                ; escolhe o caractere '6'
+    call putchar                ;
+
+    ret
+
+clean_dave_current_pos:
+    mov dh, [dave_pos_y]    
+    mov dl, [dave_pos_x]    ; limpa a posição atual do dave para usarmos na movimentação do dave
+    mov al, 0x20    
+    call go_to_xy   
+    call putchar    
+
+    ret
+
+
 draw_jetpack_on_string:
-    mov bl, 10
-    mov dh, 1    
-    mov dl, 23
-    call go_to_xy
+    mov bl, 10                  ; muda a cor pra verde
+
+    mov dh, 1                   ;
+    mov dl, 23                  ; muda posição do x e do y
+    call go_to_xy               ;
 
     mov si, jetpack_on_string
     call prints
-    mov al, 0x20     ; caractere espaço
+    mov al, 0x20                ; caractere espaço
     call putchar
     mov al, 1
     call putchar
-    mov al, 0x20     ; caractere espaço
+    mov al, 0x20                ; caractere espaço
     call putchar
     call putchar
     call putchar
@@ -568,6 +566,7 @@ normal_movement:
     mov cl, [game_over_boolean]
     cmp cl, 1
     je .end_game
+
     call draw_dave
     call getchar
 
@@ -584,7 +583,7 @@ normal_movement:
 
 
     .move_up:
-        call clean_last_dave_pos
+        call clean_dave_current_pos
         dec byte [dave_pos_y]
         call draw_dave
         cmp dh, 21
@@ -594,12 +593,10 @@ normal_movement:
         dec dl
         call go_to_xy
         call read_char_in_cursor_pos
-        cmp ah, 4
-        je game_loop
-        cmp ah, 7
+        cmp ah, 7                       ;compara cor do caractere onde o cursor está posicionado (cinza)
         je game_loop
 
-        call clean_last_dave_pos
+        call clean_dave_current_pos
         dec byte [dave_pos_x]
         jmp game_loop
 
@@ -607,12 +604,10 @@ normal_movement:
         inc dl
         call go_to_xy
         call read_char_in_cursor_pos
-        cmp ah, 4
-        je game_loop
-        cmp ah, 10
+        cmp ah, 10                      ;compara cor do caractere onde o cursor está posicionado (verde claro)
         je .jetpack_on
 
-        call clean_last_dave_pos
+        call clean_dave_current_pos
         inc byte [dave_pos_x]
         jmp game_loop
     
@@ -621,14 +616,15 @@ normal_movement:
         mov dx, 3000   ;LOW WORD.
         mov ah, 86h    ;WAIT.
         int 15h
-        call clean_last_dave_pos
+
+        call clean_dave_current_pos
         inc byte [dave_pos_y]
         jmp game_loop
 
     .jetpack_on:
         inc byte [jetpack_boolean]
         call draw_jetpack_on_string
-        call clean_last_dave_pos
+        call clean_dave_current_pos
         inc byte [dave_pos_x]
         jmp game_loop
     
@@ -664,7 +660,7 @@ jetpack_movement:
         je game_loop
         call collect_gem
         
-        call clean_last_dave_pos
+        call clean_dave_current_pos
         dec byte [dave_pos_y]
         jmp game_loop
 
@@ -672,15 +668,15 @@ jetpack_movement:
         dec dl
         call go_to_xy
         call read_char_in_cursor_pos
-        cmp ah, 4
+        cmp ah, 4                           ; vermelho
         je game_loop
-        cmp ah, 7
+        cmp ah, 7                           ; cinza
         je game_loop
-        cmp ah, 6
+        cmp ah, 6                           ; marrom
         je .check_game_over
         call collect_gem
 
-        call clean_last_dave_pos
+        call clean_dave_current_pos
         dec byte [dave_pos_x]
         jmp game_loop
 
@@ -697,7 +693,7 @@ jetpack_movement:
         call collect_gem
 
         
-        call clean_last_dave_pos
+        call clean_dave_current_pos
         inc byte [dave_pos_y]
         jmp game_loop
 
@@ -709,13 +705,13 @@ jetpack_movement:
         je game_loop
         call collect_gem
 
-        call clean_last_dave_pos
+        call clean_dave_current_pos
         inc byte [dave_pos_x]
         jmp game_loop
 
     .check_game_over:
         mov cl, [score]
-        cmp cl, 57
+        cmp cl, 57              ; checa se o score está apontando para o código ASCII do caractere '9'
         je .game_over
         jmp game_loop
     
@@ -732,17 +728,18 @@ game_loop:
 start:          
     mov ax, 13h             ; iniciar modo gráfico
     int 10h         
+
     xor ax, ax              ; limpando ax
-    mov cl, 58              ; limpando cx
     mov ds, ax              ; limpando ds
-    mov es, ax              ; limpando es
 
     call start_screen
     call start_game
+
     call draw_scenario
+    call draw_items
+
     call draw_score_string
     call draw_get_the_jetpack_string
-
     call draw_score_value
 
     call game_loop
