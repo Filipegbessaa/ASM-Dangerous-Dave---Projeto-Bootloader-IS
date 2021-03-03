@@ -356,44 +356,55 @@ draw_diamond:
     call putchar
 
     ret
+draw_gem:
 
-draw_diamonds:
+    mov al, 'O'                 ;
+    call putchar                ; desenha 'O'
+
+    ret
+
+; erase_diamond:
+;     cmp al, 0x5C
+;     je .erase_diamond_
+
+
+draw_gems:
     mov bl,3                    ; Muda a cor para ciano
 
 
     mov dh, 04                  ;
     mov dl, 09                  ; Move cursor para a linha 4 e coluna 9
     call go_to_xy
-    call draw_diamond
+    call draw_gem
 
     mov bl, 02                  ; Muda a cor do diamante de ciano para verde claro
     mov dh, 09                  ;
     mov dl, 01                  ; Move cursor para a linha 09 e coluna 01
     call go_to_xy
-    call draw_diamond
+    call draw_gem
 
     mov bl, 13                  ; Muda a cor do diamante para rosa
     mov dh, 09                  ;
     mov dl, 20                  ; Move cursor para a linha 09 e coluna 01
     call go_to_xy
-    call draw_diamond
+    call draw_gem
 
     mov bl, 3                   ; Muda cor para ciano
     mov dh, 14                  ;
     mov dl, 06                  ;Move cursor para a linha 14 e coluna 6
     call go_to_xy
-    call draw_diamond
+    call draw_gem
 
     mov dh, 18                  ;
     mov dl, 20                  ; Move cursor para a linha 18 e coluna 20
     call go_to_xy
-    call draw_diamond
+    call draw_gem
 
     mov bl, 13                  ; Muda a cor do diamante para rosa claro
     mov dh, 19                  ;
     mov dl, 11                  ; Move cursor para a linha 09 e coluna 01
     call go_to_xy
-    call draw_diamond
+    call draw_gem
 
     ret
 
@@ -405,7 +416,7 @@ draw_scenario:
     call draw_platforms
     call draw_door_wall
     call draw_door
-    call draw_diamonds
+    call draw_gems
     ret
 draw_dave:
 
@@ -433,6 +444,7 @@ read_char_in_cursor_pos:
     mov ah, 0x08
     int 10h
     ret
+
 game_loop:
     call draw_dave
     call getchar
