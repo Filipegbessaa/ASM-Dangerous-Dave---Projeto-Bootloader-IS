@@ -2,7 +2,7 @@
 
 ## Introduction 📖
 
-ASM Dangerous Dave is a game created to present as a bootloader project of the college course "Infraestrutura de Software" from the university UFPE as an attempt to recreate a stage of the game "Dangerous Dave".
+ASM Dangerous Dave is a game created to be presented as a bootloader project of the college course "Infraestrutura de Software" from the university UFPE as an attempt to recreate a stage of the game "Dangerous Dave".
 In the game, you need to get the jetpack, collect the gems displayed in the screen and then enter door.
 
 ## How to play 🎮
