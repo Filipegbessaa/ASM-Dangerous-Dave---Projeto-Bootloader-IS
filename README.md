@@ -4,6 +4,10 @@
 
 ASM Dangerous Dave is a game created to present as a bootloader project of the college course "Infraestrutura de Software" from the university UFPE as an attempt to recreate a stage of the game "Dangerous Dave".
 In the game, you need to get the jetpack, collect the gems displayed in the screen and then enter door.
+## Game Images :camera:
+![Start Screen](/images/start_screen.png "Start Screen")
+![Game Screen](/images/game_screen.png "Game Screen")
+![Game Over Screen](/images/game_over_screen "Game Over Screen")
 
 ## How to play 🎮
 
@@ -21,16 +25,16 @@ ENTER = start the game
 
 - Without jetpack
 
-    -w = jump
-    -a = move left  
-    -d = move right
+    * w = jump
+    * a = move left  
+    * d = move right
 
 - With jetpack
 
-    -w = move up
-    -a = move left  
-    -d = move right  
-    -s = move down  
+    *   w = move up
+    *   a = move left  
+    *   d = move right  
+    *   s = move down  
 
 
 ## Disclaimer ❗
