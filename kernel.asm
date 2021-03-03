@@ -3,18 +3,20 @@ jmp 0x0000:start
 
     
 data:                           ;dados do projeto
-    press_enter         db 'Press ENTER to start',0
-    dangerous_dave      db 'Dangerous Dave',0
-    ground              db '----------------------------------------',0
-    scenario_tile1      db '--------------',0
-    scenario_tile2      db '----',0
-    score_string        db 'SCORE:',0
-    dave_pos_x          db 05
-    dave_pos_y          db 22
-    dave_next_pos_x     db 0
-    dave_next_pos_y     db 0
-    score               db 48
-    jetpack_boolean     db 0
+    press_enter                 db 'Press ENTER to start',0
+    dangerous_dave              db 'Dangerous Dave',0
+    ground                      db '----------------------------------------',0
+    scenario_tile1              db '--------------',0
+    scenario_tile2              db '----',0
+    score_string                db 'SCORE:',0
+    jetpack_on_string           db 'JETPACK ON!',0
+    get_the_jetpack_string      db 'GET THE JETPACK!',0
+    dave_pos_x                  db 05
+    dave_pos_y                  db 22
+    dave_next_pos_x             db 0
+    dave_next_pos_y             db 0
+    score                       db 48
+    jetpack_boolean             db 0
 
 
     
@@ -479,6 +481,32 @@ collect_gem:
         call draw_score_value
         ret
 
+draw_jetpack_on_string:
+    mov bl, 10
+    mov dh, 1    
+    mov dl, 23
+    call go_to_xy
+
+    mov si, jetpack_on_string
+    call prints
+    mov al, 0x20     ; caractere espaço
+    call putchar
+    mov al, 1
+    call putchar
+    mov al, 0x20     ; caractere espaço
+    call putchar
+    call putchar
+    call putchar
+    ret
+draw_get_the_jetpack_string:
+    mov bl, 10
+    mov dh, 1    
+    mov dl, 23
+    call go_to_xy
+
+    mov si, get_the_jetpack_string
+    call prints
+    ret
 draw_score_string:
     mov bl, 10
     mov dh, 1    
@@ -526,6 +554,8 @@ normal_movement:
         call read_char_in_cursor_pos
         cmp ah, 4
         je game_loop
+        cmp ah, 7
+        je game_loop
 
         call clean_last_dave_pos
         dec byte [dave_pos_x]
@@ -546,6 +576,7 @@ normal_movement:
 
     .jetpack_on:
         inc byte [jetpack_boolean]
+        call draw_jetpack_on_string
         call clean_last_dave_pos
         inc byte [dave_pos_x]
         jmp game_loop
@@ -652,6 +683,8 @@ start:
     call start_game
     call draw_scenario
     call draw_score_string
+    call draw_get_the_jetpack_string
+
     call draw_score_value
 
 
