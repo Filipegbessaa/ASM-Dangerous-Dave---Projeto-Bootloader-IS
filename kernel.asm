@@ -17,8 +17,7 @@ data:                           ;dados do projeto
     dave_next_pos_y             db 0
     score                       db 48
     jetpack_boolean             db 0
-
-
+    game_over_boolean           db 0
     
 
 
@@ -536,6 +535,9 @@ draw_jetpack:
 
 
 normal_movement:
+    mov cl, [game_over_boolean]
+    cmp cl, 1
+    je .end_game
     call draw_dave
     call getchar
 
@@ -580,6 +582,9 @@ normal_movement:
         call clean_last_dave_pos
         inc byte [dave_pos_x]
         jmp game_loop
+    
+    .end_game:
+        ret
 jetpack_movement:
     mov al, [jetpack_boolean]
     cmp al, 0
@@ -619,12 +624,11 @@ jetpack_movement:
         call read_char_in_cursor_pos
         cmp ah, 4
         je game_loop
-        cmp ah, 6
-        je game_loop
         cmp ah, 7
         je game_loop
+        cmp ah, 6
+        je .finish_game
         call collect_gem
-
 
         call clean_last_dave_pos
         dec byte [dave_pos_x]
@@ -659,13 +663,17 @@ jetpack_movement:
         inc byte [dave_pos_x]
         jmp game_loop
 
+    .finish_game:
+        inc byte [game_over_boolean]
+        mov cl, [score]
+        cmp cl, 57
+        je clear
+        ret
 
 game_loop:
-
     call jetpack_movement
     call normal_movement
-    jmp game_loop
-    
+    ret
 
 
 
@@ -687,9 +695,8 @@ start:
 
     call draw_score_value
 
-
-
     call game_loop
+
 
 
 jmp $
