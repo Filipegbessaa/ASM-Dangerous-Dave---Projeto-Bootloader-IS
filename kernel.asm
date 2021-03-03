@@ -124,7 +124,7 @@ draw_ground:
     ret
 
 draw_left_wall:
-    mov dh, 0
+    mov dh, 2
     mov dl, 0
     .loop:
         call go_to_xy
@@ -172,13 +172,13 @@ draw_left_wall:
         ret
 
 draw_right_wall:
-    mov dh, 0
+    mov dh, 2
     mov dl, 39
     
     .loop:
         call go_to_xy
         mov al, 0x7C
-        mov bl, 0x04
+        mov bl, 4
         call putchar
         inc dh
         cmp dh, 24
@@ -187,6 +187,25 @@ draw_right_wall:
     
     .endloop:
         ret
+
+draw_roof:
+    mov dh, 2
+    mov dl, 1
+    
+    .loop:
+        call go_to_xy
+        mov al, 0x2D
+        mov bl, 4
+        call putchar
+        inc dl
+        call read_char_in_cursor_pos
+        cmp ah, 4
+        je .endloop
+        jmp .loop
+    
+    .endloop:
+        ret
+
 draw_door_wall:
     mov dh, 20
     mov dl, 18
@@ -382,6 +401,7 @@ draw_scenario:
     call draw_ground
     call draw_left_wall
     call draw_right_wall
+    call draw_roof
     call draw_platforms
     call draw_door_wall
     call draw_door
