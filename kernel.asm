@@ -9,6 +9,8 @@ data:
     scenario_tile2      db '----',0
     dave_pos_x          db 05
     dave_pos_y          db 22
+    dave_next_pos_x     db 0
+    dave_next_pos_y     db 0
 
 
     
@@ -405,6 +407,12 @@ clean_last_dave_pos:
     call putchar
 
     ret
+
+read_char_in_cursor_pos:
+    xor bh, bh
+    mov ah, 0x08
+    int 10h
+    ret
 game_loop:
     call draw_dave
     call getchar
@@ -424,21 +432,55 @@ game_loop:
     jmp game_loop
 
     .move_up:
+        dec dh
+        call go_to_xy
+        call read_char_in_cursor_pos
+        cmp ah, 4
+        je game_loop
+        
         call clean_last_dave_pos
         dec byte [dave_pos_y]
         jmp game_loop
 
     .move_left:
+        dec dl
+        call go_to_xy
+        call read_char_in_cursor_pos
+        cmp ah, 4
+        je game_loop
+        cmp ah, 6
+        je game_loop
+        cmp ah, 7
+        je game_loop
+
+
         call clean_last_dave_pos
         dec byte [dave_pos_x]
         jmp game_loop
 
     .move_down:
+        inc dh
+        call go_to_xy
+        call read_char_in_cursor_pos
+        cmp ah, 4
+        je game_loop
+        cmp ah, 7
+        je game_loop
+        cmp ah, 6
+        je game_loop
+
+        
         call clean_last_dave_pos
         inc byte [dave_pos_y]
         jmp game_loop
 
     .move_right:
+        inc dl
+        call go_to_xy
+        call read_char_in_cursor_pos
+        cmp ah, 4
+        je game_loop
+
         call clean_last_dave_pos
         inc byte [dave_pos_x]
         jmp game_loop
