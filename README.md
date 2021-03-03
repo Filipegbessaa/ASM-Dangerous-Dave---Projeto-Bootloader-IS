@@ -39,8 +39,13 @@ This project was created for non-commercial learning purposes and the rights of 
 
 ## Game Images :camera:
 - Start screen
+
 ![Start Screen](/images/start_screen.png "Start Screen")
+
 - Game screen
+
 ![Game Screen](/images/game_screen.png "Game Screen")
+
 - Game over screen
+  
 ![Game Over Screen](/images/game_over_screen.png "Game Over Screen")
