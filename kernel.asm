@@ -1,7 +1,8 @@
 org 0x7e00
 jmp 0x0000:start 
 
-data:
+    
+data:                           ;dados do projeto
     press_enter         db 'Press ENTER to start',0
     dangerous_dave      db 'Dangerous Dave',0
     ground              db '----------------------------------------',0
@@ -17,7 +18,6 @@ data:
 
     
 
-    ;dados do projeto
 
 putchar:                        ;Printa um caractere na tela, pega o valor salvo em al
     mov ah, 0x0e
@@ -360,7 +360,7 @@ draw_diamond:
     ret
 draw_gem:
 
-    mov al, 'O'                 ;
+    mov al, 4                   ;
     call putchar                ; desenha 'O'
 
     ret
@@ -495,8 +495,9 @@ draw_score_value:
     call putchar
     ret
 
-
-game_loop:
+normal_movement:
+    
+jetpack_movement:
     call draw_dave
     call getchar
 
@@ -572,6 +573,10 @@ game_loop:
         inc byte [dave_pos_x]
         jmp game_loop
 
+
+game_loop:
+
+    call jetpack_movement
     jmp game_loop
     
 
