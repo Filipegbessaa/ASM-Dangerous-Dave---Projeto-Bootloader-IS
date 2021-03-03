@@ -7,11 +7,12 @@ data:
     ground              db '----------------------------------------',0
     scenario_tile1      db '--------------',0
     scenario_tile2      db '----',0
+    score_string        db 'SCORE:',0
     dave_pos_x          db 05
     dave_pos_y          db 22
     dave_next_pos_x     db 0
     dave_next_pos_y     db 0
-    score               db 0
+    score               db 48
 
 
     
@@ -447,7 +448,7 @@ read_char_in_cursor_pos:
     ret
 
 collect_gem:
-    cmp ah, 3                           
+    cmp ah, 2                           
     je .emerald_collect_score_increase  ; aumenta score em 3 ao coletar esmeralda (gema verde)
 
     cmp ah, 14                          
@@ -461,18 +462,38 @@ collect_gem:
 
     .gold_collect_score_increase:
         inc byte [score]
+        call draw_score_value
         ret
 
     .quartzo_collect_score_increase:
         inc byte [score]
         inc byte [score]
+        call draw_score_value
         ret
 
     .emerald_collect_score_increase:
         inc byte [score]
         inc byte [score]
-        inc byte [score]
+        call draw_score_value
         ret
+
+draw_score_string:
+    mov bl, 10
+    mov dh, 1    
+    mov dl, 1
+    call go_to_xy
+
+    mov si, score_string
+    call prints
+    ret
+draw_score_value:
+    mov bl, 10
+    mov dh, 1
+    mov dl, 7
+    call go_to_xy
+    mov al, [score]
+    call putchar
+    ret
 
 
 game_loop:
@@ -562,12 +583,15 @@ start:
     mov ax, 13h             ; iniciar modo gráfico
     int 10h         
     xor ax, ax              ; limpando ax
+    mov cl, 58              ; limpando cx
     mov ds, ax              ; limpando ds
     mov es, ax              ; limpando es
 
     call start_screen
     call start_game
     call draw_scenario
+    call draw_score_string
+    call draw_score_value
 
 
 
