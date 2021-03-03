@@ -5,12 +5,15 @@ jmp 0x0000:start
 data:                           ;dados do projeto
     press_enter                 db 'Press ENTER to start',0
     dangerous_dave              db 'Dangerous Dave',0
+    empty_string                db '                    ',0
     ground                      db '----------------------------------------',0
     scenario_tile1              db '--------------',0
     scenario_tile2              db '----',0
     score_string                db 'SCORE:',0
     jetpack_on_string           db 'JETPACK ON!',0
     get_the_jetpack_string      db 'GET THE JETPACK!',0
+    congratulations             db 'CONGRATULATIONS!',0
+    you_are_really_dangerous    db 'You are really dangerous!',0
     dave_pos_x                  db 05
     dave_pos_y                  db 22
     dave_next_pos_x             db 0
@@ -69,17 +72,28 @@ prints:                         ; mov si, string
     .endloop:
         ret
 
+game_over_screen:
+    mov bl, 4              ; muda a cor das letras para vermelho
+
+    mov dh, 2    
+    mov dl, 12
+    call go_to_xy
+
+    mov si, congratulations
+    call prints
+
+    ; reset cursor to the center of the screen
+    mov dh, 12
+    mov dl, 9
+    call go_to_xy
+
+
+    mov si, you_are_really_dangerous    ;si aponta para o começo do endereço onde está mensagem
+    call prints         ;
+
+    ret
 start_screen:
     mov bl, 14              ; muda a cor das letras para amarelo
-
-    mov dx, 0               ; 
-    call go_to_xy           ;
-                            ;
-    mov cx, 2000            ;
-    mov bh, 0               ; limpa a tela
-    mov al, 0x20            ;
-    mov ah, 0x9             ;
-    int 0x10                ;
 
     mov dh, 2    
     mov dl, 14
@@ -106,8 +120,24 @@ start_game:
         je .endloop2    ;Se o caractere for ENTER, a tela é limpa
         jmp .loop2
     .endloop2:
-        call clear
+        mov dh, 2    
+        mov dl, 14
+        call go_to_xy
+
+        mov si, empty_string
+        call prints
+
+        ; reset cursor to the center of the screen
+        mov dh, 12
+        mov dl, 11
+        call go_to_xy
+
+
+        mov si, empty_string    ;si aponta para o começo do endereço onde está mensagem
+        call prints       
+
         ret
+        
     
 
 draw_ground:
@@ -627,7 +657,7 @@ jetpack_movement:
         cmp ah, 7
         je game_loop
         cmp ah, 6
-        je .finish_game
+        je .check_game_over
         call collect_gem
 
         call clean_last_dave_pos
@@ -663,21 +693,21 @@ jetpack_movement:
         inc byte [dave_pos_x]
         jmp game_loop
 
-    .finish_game:
-        inc byte [game_over_boolean]
+    .check_game_over:
         mov cl, [score]
         cmp cl, 57
-        je clear
+        je .game_over
+        jmp game_loop
+    
+    .game_over:
+        inc byte [game_over_boolean]
+        jmp clear
         ret
 
 game_loop:
     call jetpack_movement
     call normal_movement
     ret
-
-
-
-
 
 start:          
     mov ax, 13h             ; iniciar modo gráfico
@@ -696,6 +726,7 @@ start:
     call draw_score_value
 
     call game_loop
+    call game_over_screen
 
 
 
