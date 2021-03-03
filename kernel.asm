@@ -571,6 +571,9 @@ normal_movement:
     call draw_dave
     call getchar
 
+    cmp al, "w"
+    je .move_up
+
     cmp al, "a"
     je .move_left
 
@@ -579,6 +582,13 @@ normal_movement:
     
     jmp game_loop
 
+
+    .move_up:
+        call clean_last_dave_pos
+        dec byte [dave_pos_y]
+        call draw_dave
+        cmp dh, 21
+        je .gravity
 
     .move_left:
         dec dl
@@ -605,6 +615,15 @@ normal_movement:
         call clean_last_dave_pos
         inc byte [dave_pos_x]
         jmp game_loop
+    
+    .gravity:
+        mov cx, 2      ;HIGH WORD.
+        mov dx, 3000   ;LOW WORD.
+        mov ah, 86h    ;WAIT.
+        int 15h
+        call clean_last_dave_pos
+        inc byte [dave_pos_y]
+        jmp game_loop
 
     .jetpack_on:
         inc byte [jetpack_boolean]
@@ -615,6 +634,7 @@ normal_movement:
     
     .end_game:
         ret
+        jmp game_loop
 jetpack_movement:
     mov al, [jetpack_boolean]
     cmp al, 0
