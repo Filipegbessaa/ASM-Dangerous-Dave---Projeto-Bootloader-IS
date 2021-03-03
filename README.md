@@ -9,7 +9,7 @@ In the game, you need to get the jetpack, collect the gems displayed in the scre
 
 ### Instalation
 
-To play the game, a PC with a Linux distribuition and QEMU, QEMU a generic and open source machine emulator and virtualizer are necessary.
+To play the game, a PC with a Linux distribuition and QEMU or other generic machine emulator and virtualizer are necessary.
 
 ```
 Debian/Ubuntu: apt-get install qemu
