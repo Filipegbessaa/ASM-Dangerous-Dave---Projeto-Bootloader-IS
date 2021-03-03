@@ -14,6 +14,7 @@ data:                           ;dados do projeto
     dave_next_pos_x     db 0
     dave_next_pos_y     db 0
     score               db 48
+    jetpack_boolean     db 0
 
 
     
@@ -419,6 +420,7 @@ draw_scenario:
     call draw_door_wall
     call draw_door
     call draw_gems
+    call draw_jetpack
     ret
 draw_dave:
 
@@ -495,9 +497,62 @@ draw_score_value:
     call putchar
     ret
 
+draw_jetpack:
+    mov dh, 22                  ;
+    mov dl, 10                  ; Move cursor para a linha 23 e coluna 5
+    call go_to_xy
+    mov bl, 10
+    mov al, 1                   ;
+    call putchar                ; desenha 'O'
+    ret
+
+
 normal_movement:
+    call draw_dave
+    call getchar
+
+    cmp al, "a"
+    je .move_left
+
+    cmp al, "d"
+    je .move_right
     
+    jmp game_loop
+
+
+    .move_left:
+        dec dl
+        call go_to_xy
+        call read_char_in_cursor_pos
+        cmp ah, 4
+        je game_loop
+
+        call clean_last_dave_pos
+        dec byte [dave_pos_x]
+        jmp game_loop
+
+    .move_right:
+        inc dl
+        call go_to_xy
+        call read_char_in_cursor_pos
+        cmp ah, 4
+        je game_loop
+        cmp ah, 10
+        je .jetpack_on
+
+        call clean_last_dave_pos
+        inc byte [dave_pos_x]
+        jmp game_loop
+
+    .jetpack_on:
+        inc byte [jetpack_boolean]
+        call clean_last_dave_pos
+        inc byte [dave_pos_x]
+        jmp game_loop
 jetpack_movement:
+    mov al, [jetpack_boolean]
+    cmp al, 0
+    je normal_movement
     call draw_dave
     call getchar
 
@@ -577,6 +632,7 @@ jetpack_movement:
 game_loop:
 
     call jetpack_movement
+    call normal_movement
     jmp game_loop
     
 
