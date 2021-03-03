@@ -7,7 +7,7 @@ In the game, you need to get the jetpack, collect the gems displayed in the scre
 ## Game Images :camera:
 ![Start Screen](/images/start_screen.png "Start Screen")
 ![Game Screen](/images/game_screen.png "Game Screen")
-![Game Over Screen](/images/game_over_screen "Game Over Screen")
+![Game Over Screen](/images/game_over_screen.png "Game Over Screen")
 
 ## How to play 🎮
 
