@@ -385,8 +385,8 @@ draw_diamond:
     mov al, 0x5F                ;
     call putchar                ; desenha '_'
 
-    
-    inc dh
+
+    inc dh              
     inc dl
     call go_to_xy               ; move o cursor para uma linha mais embaixo e uma coluna mais à direita
 
@@ -568,6 +568,7 @@ normal_movement:
     je .end_game
 
     call draw_dave
+
     call getchar
 
     cmp al, "w"
@@ -588,6 +589,7 @@ normal_movement:
         call draw_dave
         cmp dh, 21
         je .gravity
+        
 
     .move_left:
         dec dl
@@ -613,7 +615,7 @@ normal_movement:
     
     .gravity:
         mov cx, 2      ;HIGH WORD.
-        mov dx, 3000   ;LOW WORD.
+        mov dx, 3       ;LOW WORD.
         mov ah, 86h    ;WAIT.
         int 15h
 
@@ -636,7 +638,14 @@ jetpack_movement:
     cmp al, 0
     je normal_movement
     call draw_dave
+
+    mov cx, 5      ;HIGH WORD.
+    mov dx, 3   ;LOW WORD.
+    mov ah, 86h    ;WAIT.
+    int 15h
     call getchar
+    mov dl, [dave_pos_x]
+    mov dh, [dave_pos_y]
 
     cmp al, "w"
     je .move_up
